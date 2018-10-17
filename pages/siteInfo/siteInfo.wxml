@@ -1,0 +1,44 @@
+<!--pages/siteInfo/siteInfo.wxml-->
+<view class='page'>
+  <map id='myMap' latitude="{{site.lat}}" longitude="{{site.lng}}" scale='19' enable-zoom='false' enable-scroll='false'>
+    <cover-view class='map_disabler' bindtap='openLocation'></cover-view>
+    <cover-image class='map_pin' src='../images/icon_pin.png' />
+    <cover-view class='loc_coords'>工地坐标：{{site.lng}},{{site.lat}}</cover-view>
+  </map>
+  <view class="page__bd">
+
+    <view class="weui-cells__title">工地位置:</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell weui-cell_input">
+        <view class="weui-cell__bd">
+          <input disabled='true' class="weui-input" value='{{site.locDesc}}' />
+        </view>
+      </view>
+    </view>
+
+    <view class="weui-cells__title">工地情况概述：</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell">
+        <view class="weui-cell__bd">
+          <textarea disabled='true' class="weui-textarea" style="height: 3.3em" value='{{site.siteDesc}}' />
+        </view>
+      </view>
+    </view>
+
+    <view class="weui-cells__title">工地照片：</view>
+    <view class="weui-grids">
+      <block wx:for="{{site.imgFilePath}}" wx:key="*this">
+        <view class="weui-grid" hover-class="weui-grid_active">
+          <image class='grid_Pic' src="{{item}}" mode="aspectFill" bindtap='previewImage' data-src='{{item}}' />
+        </view>
+      </block>
+    </view>
+  </view>
+  <view class="page__bd">
+    <view class="weui-cells__title">上传时间：{{site.uploadDate}}</view>
+    <view class="weui-cells__title">上传工号：{{site.empId}}</view>
+    <view class="weui-cells__title">上传微信：{{site.nickName}}</view>
+    <view class="weui-cells__title">状态积分：{{site.status}},积{{site.credit}}分</view>
+    <view class="weui-cells__title">联系信息：{{site.name}} {{site.title}} Tel:{{site.phone}}</view>
+  </view>
+</view>

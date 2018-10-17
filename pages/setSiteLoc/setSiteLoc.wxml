@@ -1,0 +1,28 @@
+<view class='page'>
+  <map id="myMap" latitude="{{userLoc.lat}}" longitude="{{userLoc.lng}}" scale='{{scale}}' controls='{{controls}}' markers='{{markers}}' show-location>
+    <!-- 中心指示器 -->
+    <cover-image class='map_pin' src='../images/icon_pin.png' />
+    <!-- 顶部横幅 -->
+    <cover-view id='top_banner'>
+      <block wx:if="{{!hasUserInfo && canIUse}}">
+        <cover-image class='avatar' src='../images/icon_user.png'></cover-image>
+        <button class='userInfo_btn' open-type='getUserInfo' bindgetuserinfo='setUserInfo' style='background-image:url(../images/icon_user.png);'>登录</button>
+      </block>
+      <cover-image class='avatar' wx:if="{{!hasUserInfo && !canIUse}}" bindtap='getUserInfo' src='../images/icon_user.png'></cover-image>
+      <cover-image class='avatar' wx:if="{{hasUserInfo}}" src="{{userInfo.avatarUrl}}" bindtap='toUserInfo'></cover-image>
+      <block wx:if="{{!!appUser.empId}}">
+        <cover-view class='top_text'><cover-view>您的工号：</cover-view><cover-view class="txt_highlight">{{appUser.empId}}</cover-view><cover-view>，请确保工号准确</cover-view></cover-view>
+      </block>
+      <block wx:else>
+        <cover-view class='top_text'>
+          <cover-view class="txt_warning">未填写工号，准确填写工号才能获得奖励</cover-view>
+        </cover-view>
+      </block>
+      <cover-image class='history' src='../images/icon_history.png' bindtap='toHistory'></cover-image>
+    </cover-view>
+    <!-- 回到当前位置 -->
+    <cover-image id='mapctrl_resetLoc' src='../images/icon_getloc.png' catchtap='resetLoc'></cover-image>
+    <!-- 提交按钮 -->
+    <cover-view id='btn_setLoc' catchtap='setSiteLoc'>工地在这里！</cover-view>
+  </map>
+</view>

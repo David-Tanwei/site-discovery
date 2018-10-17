@@ -1,0 +1,52 @@
+<view class='page'>
+  <map id='myMap' latitude="{{siteLoc.lat}}" longitude="{{siteLoc.lng}}" scale='19' enable-zoom='false' enable-scroll='false'>
+    <cover-view class='map_disabler' bindtap='reSetLoc'></cover-view>
+    <cover-image class='map_pin' src='../images/icon_pin.png' />
+    <cover-view class='loc_coords'>工地坐标：{{siteLoc.lng}},{{siteLoc.lat}}</cover-view>
+  </map>
+  <form bindsubmit='submitSite'>
+    <view class="page__bd">
+     
+      <view class="weui-cells__title">工地位置:（请补充完整）</view>
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__bd">
+            <input class="weui-input" placeholder="例如：钦州北路贵菁路交叉路口" value='{{siteLoc.locDesc}}' name='locDesc' />
+          </view>
+        </view>
+      </view>
+      <view class="weui-cells__tips">
+        <text>*请补充完整，如路口方位、人行道/绿化带等</text>
+      </view>
+
+      <view class="weui-cells__title">工地情况概述：</view>
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell">
+          <view class="weui-cell__bd">
+            <textarea class="weui-textarea" placeholder="请填写工地情况描述..." style="height: 3.3em" bindinput='descInput' name='siteDesc' />
+            <view class="weui-textarea-counter">{{txtCnt}}/140</view>
+          </view>
+        </view>
+      </view>
+
+      <view class="weui-cells__title">上传工地照片：{{imgFilePath.length}}/9</view>
+      <view class="weui-grids">
+        <block wx:for="{{imgFilePath}}" wx:key="*this">
+          <view class="weui-grid" hover-class="weui-grid_active">
+            <image class='grid_Pic' src="{{item}}" mode="aspectFill" bindtap='previewImage' data-src='{{item}}'/>
+            <icon class='grid_delPic' catchtap='removeImage' data-index='{{index}}' type='cancel' color='grey' size='30'/>
+          </view>
+        </block>
+        <block wx:if="{{imgFilePath.length<9}}">
+          <view class="weui-grid" hover-class="weui-grid_active" bindtap='chooseImage'>
+            <image class="grid_addPic" src="../images/icon_add.png" />
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <view class="page__bd">
+      <button class="weui-btn" type="primary" form-type='submit'>填完了，发送！</button>
+    </view>
+  </form>
+</view>

@@ -1,0 +1,80 @@
+/* pages/siteInfo/siteInfo.wxss */
+map{
+  width: 100%;
+  height: 150px
+}
+
+.map_disabler{
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+}
+
+.map_disabler:active{
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.map_pin{
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  margin-top:-32rpx;
+  margin-left:-2rpx;
+  width:32rpx;
+  height:64rpx;
+}
+
+.loc_coords{
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 2rpx;
+  font-size: 20rpx;
+  color: grey;
+}
+
+button{
+  width: 90%;
+  /* height: 80rpx;
+  line-height: 80rpx;
+  font-size: 30rpx; */
+}
+
+.weui-grids{
+  width: 95%;
+  margin: 0 auto;
+  border: none;
+}
+
+.weui-grid{
+  margin: 0.5%;
+  border: none;
+  height: 0;
+  width: 32%;
+  padding: 0;
+  padding-bottom: 32%;
+  overflow: hidden;
+  position: relative;
+  background-color: white;
+}
+
+.grid_Pic{
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
+.grid_addPic{
+  height: 50%;
+  width: 50%;
+  position: absolute;
+  top: 25%;
+  left: 25%;
+}
+
+.grid_delPic{
+  position: absolute;
+  top:3%;
+  right: 3%;
+}

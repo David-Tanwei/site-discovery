@@ -1,0 +1,116 @@
+/* pages/chooseMapLoc/chooseMapLoc.wxss */
+
+map {
+  width: 100%;
+  height: 100vh;
+}
+
+.map_pin {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: -32rpx;
+  margin-left: -2rpx;
+  width: 32rpx;
+  height: 64rpx;
+}
+
+#top_banner {
+  position: absolute;
+  width: calc(100% - 30rpx);
+  top: 15rpx;
+  left: 15rpx;
+  z-index: 99;
+  height: 100rpx;
+  display: flex;
+  flex-direction: row;
+  background: rgba(255, 255, 255, 0.8);
+  align-items: center;
+  font-size: 28rpx;
+  color: #666;
+  border-radius: 10rpx;
+}
+
+.userInfo_btn {
+  height: 70rpx;
+  width: 70rpx;
+  border-radius: 50%;
+  border: none;
+  position: absolute;
+  left: 15rpx;
+  top:15rpx;
+  opacity: 0;
+  line-height: 70rpx;
+  font-size: 20rpx;
+}
+
+.userInfo_btn::after{
+  border: none;
+}
+
+.avatar {
+  height: 70rpx;
+  width: 70rpx;
+  margin: 0 15rpx;
+  border-radius: 50%;
+}
+
+.avatar:active{
+  opacity: 0.8;
+}
+
+.top_text {
+  display: flex;
+  padding: 0 10rpx;
+}
+
+.txt_highlight {
+  color: blue;
+  /* position: static; */
+}
+
+.txt_warning {
+  color: red;
+}
+
+.history{
+  position: absolute;
+  top: 27rpx;
+  right: 25rpx;
+  width: 50rpx;
+  height: 50rpx;
+}
+
+.history:active{
+  opacity: 0.8;
+}
+
+#btn_setLoc {
+  position: absolute;
+  width: calc(100% - 30rpx);
+  height: 100rpx;
+  bottom: 15rpx;
+  z-index: 99;
+  left: 15rpx;
+  background: #3cc51f;
+  align-items: center;
+  font-size: 36rpx;
+  line-height: 100rpx;
+  color: #fff;
+  text-align: center;
+  vertical-align: center;
+  border-radius: 10rpx;
+}
+
+#mapctrl_resetLoc {
+  position: absolute;
+  right: 15rpx;
+  top: 130rpx;
+  width: 80rpx;
+  height: 80rpx;
+}
+
+#mapctrl_resetLoc:active{
+  opacity: 0.8;
+}

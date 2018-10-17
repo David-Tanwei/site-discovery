@@ -1,0 +1,23 @@
+/* pages/userInfo/userInfo.wxss */
+
+.gender_ft {
+  /* border-left: 1px solid #e5e5e5;
+  line-height: 2.58823529em; */
+  white-space: nowrap;
+  color: black;
+}
+
+.gender_ft radio{
+  margin-left: 10px;
+}
+
+button{
+  width: 90%;
+}
+
+.avatar{
+  height: 70rpx;
+  width: 70rpx;
+  border-radius: 50%;
+  float: right;
+}

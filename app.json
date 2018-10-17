@@ -1,0 +1,15 @@
+{
+  "pages": [
+   "pages/setSiteLoc/setSiteLoc",
+   "pages/submitSite/submitSite",
+    "pages/history/history",
+    "pages/siteInfo/siteInfo",
+    "pages/userInfo/userInfo"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "上海移动工地大搜索",
+    "navigationBarTextStyle": "black"
+  }
+}
