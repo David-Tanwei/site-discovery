@@ -10,8 +10,8 @@
       </block>
       <cover-image class='avatar' wx:if="{{!hasUserInfo && !canIUse}}" bindtap='getUserInfo' src='../images/icon_user.png'></cover-image>
       <cover-image class='avatar' wx:if="{{hasUserInfo}}" src="{{userInfo.avatarUrl}}" bindtap='toUserInfo'></cover-image>
-      <block wx:if="{{!!appUser.empId}}">
-        <cover-view class='top_text'><cover-view>您的工号：</cover-view><cover-view class="txt_highlight">{{appUser.empId}}</cover-view><cover-view>，请确保工号准确</cover-view></cover-view>
+      <block wx:if="{{!!appUser.empID}}">
+        <cover-view class='top_text'><cover-view>您的工号：</cover-view><cover-view class="txt_highlight">{{appUser.empID}}</cover-view><cover-view>，请确保工号准确</cover-view></cover-view>
       </block>
       <block wx:else>
         <cover-view class='top_text'>

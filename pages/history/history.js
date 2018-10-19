@@ -44,9 +44,9 @@ Page({
     this.onReachBottom();
   },
 
-  //获取工号上传统计，封装异步回调 para={empId,sucess,fail,complete}
+  //获取工号上传统计，封装异步回调 para={empID,sucess,fail,complete}
   _getUploadStatics: function(para) {
-    //ajax get res with empId....
+    //ajax get res with empID....
     var res = {
       total: 40,
       accepted: 30,
@@ -61,7 +61,7 @@ Page({
 
   _setUploadStatics: function(){
     this._getUploadStatics({
-      empId: this.data.appUser.empId,
+      empID: this.data.appUser.empID,
       success: res => {
         this.setData({
           uploadStatics: res
@@ -70,9 +70,9 @@ Page({
     });
   },
 
-  //获取工地信息列表，封装异步回调 para={lastId, pageSize, empId,sucess,fail,complete}
+  //获取工地信息列表，封装异步回调 para={lastId, pageSize, empID,sucess,fail,complete}
   _getSiteList(para) {
-    //ajax get res with lastId, pageSize,empId....
+    //ajax get res with lastId, pageSize,empID....
     var res = [];
     for (var i = 1; i <= para.pageSize; i++) {
       if (para.lastId + 5 > 30) {
@@ -107,7 +107,7 @@ Page({
     this._getSiteList({
       lastId: this.data.lastId,
       pageSize: this.data.pageSize,
-      empId: this.data.appUser.empId,
+      empID: this.data.appUser.empID,
       success: res => {
         if (!res || res.length == 0) {
           this.setData({

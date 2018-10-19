@@ -1,9 +1,9 @@
 // pages/chooseMapLoc/chooseMapLoc.js
 const app = getApp();
-const pvt = require('../../private/private.js');
+const cfg = require('../../private/config.js');
 const QQMapWX = require('../../libs/qqmap-wx-jssdk.min.js');
 const qqmapsdk = new QQMapWX({
-  key: pvt.qqMapKey
+  key: cfg.qqMapKey
 });
 
 Page({
@@ -125,8 +125,12 @@ Page({
           },
           success: (res) => {
             var cr = res.result.address_reference.crossroad;
+            var ai = res.result.ad_info;
             if (res.status == 0 && cr.hasOwnProperty('title')) {
               app.globalData.siteLoc.locDesc = cr.title + cr._dir_desc + cr._distance + '米';
+            }
+            if (res.status == 0 && ai.hasOwnProperty('district')) {
+              app.globalData.siteLoc.region = ai.district;
             }
           },
           fail: res => {

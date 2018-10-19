@@ -36,7 +36,7 @@
   </view>
   <view class="page__bd">
     <view class="weui-cells__title">上传时间：{{site.uploadDate}}</view>
-    <view class="weui-cells__title">上传工号：{{site.empId}}</view>
+    <view class="weui-cells__title">上传工号：{{site.empID}}</view>
     <view class="weui-cells__title">上传微信：{{site.nickName}}</view>
     <view class="weui-cells__title">状态积分：{{site.status}},积{{site.credit}}分</view>
     <view class="weui-cells__title">联系信息：{{site.name}} {{site.title}} Tel:{{site.phone}}</view>

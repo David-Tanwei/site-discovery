@@ -2,7 +2,7 @@
 <view class='page'>
 
     <view class="page__hd">
-      <view class="page__title">工号【{{appUser.empId}}】的上传记录</view>
+      <view class="page__title">工号【{{appUser.empID}}】的上传记录</view>
       <view class="page__desc">共上传{{uploadStatics.total}}个工地信息，已采纳{{uploadStatics.accepted}}个，待确认{{uploadStatics.pending}}个，未采纳{{uploadStatics.rejected}}个，已获得积分{{uploadStatics.credit}}分。</view>
     </view>
 

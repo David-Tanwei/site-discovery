@@ -12,7 +12,7 @@
             <view class="weui-label">工号</view>
           </view>
           <view class="weui-cell__bd">
-            <input class="weui-input" placeholder="例如：11817" value='{{appUser.empId}}' name='empId'/>
+            <input class="weui-input" placeholder="例如：11817" value='{{appUser.empID}}' name='empID'/>
           </view>
         </view>
         <view class="weui-cell weui-cell_input">

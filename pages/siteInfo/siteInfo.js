@@ -25,7 +25,7 @@ Page({
       siteDesc: '挖排水管道',
       imgFilePath: ['../images/icon_user.png', '../images/icon_add.png', '../images/icon_history.png'],
       uploadDate:'2018-9-12',
-      empId:11817,
+      empID:11817,
       nickName:'Fingonski',
       status:'已采纳',
       credit:50,
