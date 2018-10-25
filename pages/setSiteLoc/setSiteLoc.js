@@ -193,10 +193,15 @@ Page({
       appUser: appUser
     })
   },
+
   toHistory:function(){
     wx.navigateTo({
       url: '/pages/history/history',
     })
-  }
+  },
 
+  //转发按钮
+  onShareAppMessage: function () {
+    return cfg.share;
+  }
 })

@@ -27,9 +27,9 @@
 
     <view class="weui-cells__title">工地照片：</view>
     <view class="weui-grids">
-      <block wx:for="{{site.imgFilePath}}" wx:key="*this">
-        <view class="weui-grid" hover-class="weui-grid_active">
-          <image class='grid_Pic' src="{{item}}" mode="aspectFill" bindtap='previewImage' data-src='{{item}}' />
+      <block wx:for="{{imgs}}" wx:key="*this">
+        <view class="weui-grid" hover-class="weui-grid_active" >
+          <image class='grid_Pic' src="{{item.src}}" mode="aspectFill" bindtap='previewImage'/>
         </view>
       </block>
     </view>

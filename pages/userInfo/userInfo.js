@@ -97,6 +97,10 @@ Page({
 
       })
     },1000)
-  }
+  },
 
+  //转发按钮
+  onShareAppMessage: function () {
+    return cfg.share;
+  }
 })

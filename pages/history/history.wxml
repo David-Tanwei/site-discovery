@@ -8,7 +8,7 @@
 
 
     <block wx:for='{{sites}}' wx:key='*this'>
-      <view class="history_item" data-id='{{item.id}}' bindtap='toSiteInfo'>
+      <view class="history_item" data-siteID='{{item.siteID}}' bindtap='toSiteInfo'>
         <image class='cover_img' src='{{item.coverImg}}'></image>
         <view class='item_bd'>
           <view class='locDesc'>{{item.locDesc}}</view>

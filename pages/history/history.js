@@ -1,4 +1,7 @@
 // pages/history/history.js
+const cfg = require('../../private/config.js');
+const util = require('../../utils/util.js');
+
 Page({
 
   /**
@@ -6,14 +9,14 @@ Page({
    */
   data: {
     appUser: {},
-    uploadStatics: {       
+    uploadStatics: {
       total: 0,
       accepted: 0,
       pending: 0,
       rejected: 0,
       credit: 0
     },
-    lastId: 0,
+    lastSeq: 0,
     pageSize: 9,
     sites: [],
     loading: false,
@@ -30,70 +33,129 @@ Page({
         appUser: appUser
       })
     };
-    this._setUploadStatics();
+    this._getUploadStatics();
     this.onReachBottom(); //initial load
   },
 
   onPullDownRefresh: function() {
-    wx.stopPullDownRefresh();
+    wx.showNavigationBarLoading()
     this.setData({
-      lastId: 0,
-      sites: []
+      lastSeq: 0,
+      sites: [],
+      loading: false,
+      noMore: false
     });
-    this._setUploadStatics();
+    this._getUploadStatics();
     this.onReachBottom();
   },
 
-  //获取工号上传统计，封装异步回调 para={empID,sucess,fail,complete}
-  _getUploadStatics: function(para) {
+  //获取工号上传统计，empID
+  _getUploadStatics: function(empID) {
     //ajax get res with empID....
-    var res = {
-      total: 40,
-      accepted: 30,
-      pending: 5,
-      rejected: 5,
-      credit: 1505
-    };
-    if (!!para.success) { para.success(res); }
-    if (!!para.complete) { para.complete(res); }
-    if (!!para.fail) { para.fail(res); }
-  },
-
-  _setUploadStatics: function(){
-    this._getUploadStatics({
-      empID: this.data.appUser.empID,
+    wx.request({
+      url: cfg.getUploadStaticsUrl,
+      header: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      data: {
+        empID: empID
+      },
+      method: 'POST',
       success: res => {
         this.setData({
-          uploadStatics: res
+          uploadStatics: res.data
         })
+      },
+      fail: err=>{
+        this._showFail(err);
+      },
+      complete:()=>{
+        wx.hideNavigationBarLoading();
+        wx.stopPullDownRefresh();
       }
-    });
+    })
   },
 
-  //获取工地信息列表，封装异步回调 para={lastId, pageSize, empID,sucess,fail,complete}
+  //获取工地信息列表 para={lastSeq, pageSize, empID}
   _getSiteList(para) {
-    //ajax get res with lastId, pageSize,empID....
-    var res = [];
-    for (var i = 1; i <= para.pageSize; i++) {
-      if (para.lastId + 5 > 30) {
-        break;
-      }
-      res.push({
-        seq: para.lastId + i,
-        id: para.lastId + i,
-        coverImg: '../images/icon_user.png',
-        locDesc: '上海市长宁区北渔路52号-' + (para.pageSize + i - 1),
-        upLoadDate: '18-12-1' + (10 - i),
-        by: 'Fingonski',
-        status: '已采纳',
-        credit: 50
+    //ajax get res with lastSeq, pageSize,empID....
+    return new Promise((resolve, reject) => {
+      wx.request({
+        url: cfg.getSiteListUrl,
+        header: {
+          'content-type': 'application/x-www-form-urlencoded'
+        },
+        data: para,
+        method: 'POST',
+        success: res => {
+          resolve(res.data);
+        },
+        fail: err => {
+          reject(err);
+        }
       })
-    };
-    setTimeout(() => {
-      if (!!para.success){para.success(res);}
-      if (!!para.complete) { para.complete(res); }
-      if (!!para.fail) { para.fail(res); }
-    }, 1000)
+      //测试
+      // var res = [];
+      // for (var i = 1; i <= para.pageSize; i++) {
+      //   if (para.lastSeq + i > 14) {
+      //     break;
+      //   }
+      //   res.push({
+      //     seq: para.lastSeq + i,
+      //     siteID: para.lastSeq + i,
+      //     locDesc: '上海市长宁区北渔路52号-' + (para.pageSize + i - 1),
+      //     upLoadDate: '18-12-1' + (10 - i),
+      //     by: 'Fingonski',
+      //     status: '已采纳',
+      //     credit: 50
+      //   })
+      // };
+      // setTimeout(() => {
+      //   resolve(res)
+      // }, 1000);
+    })
+  },
+
+  _renderSiteList: function(siteList) {
+    if (!siteList || siteList.length == 0) {
+      this.setData({
+        noMore: true,
+        loading: false
+      })
+    } else {
+      siteList = siteList.map(item => { item.coverImg = '../images/icon_site.jpg' ; return item;});
+      this.data.sites.push(...siteList);
+      var noMore = false;
+      if (siteList.length < this.data.pageSize) {
+        noMore = true
+      }
+      this.setData({
+        sites: this.data.sites,
+        lastSeq: siteList[siteList.length-1].seq,
+        noMore: noMore,
+        loading: false
+      })
+      //加载coverImg，失败则使用默认图片
+      siteList.map(item=>{
+        util.loadImg(item.siteID,0)
+        .then(img=>{
+          var ss = this.data.sites;
+          ss[ss.findIndex(e=>{return e.siteID==item.siteID})].coverImg=img.src;
+          this.setData({
+            sites:ss
+          })
+        })
+        .catch(()=>{})
+      });
+    }
+  },
+
+  _showFail: function(err) {
+    wx.showToast({
+      title: '加载错误 ' + err.errMsg,
+      icon: 'none',
+      duration: 3000
+    })
   },
 
   //触底回调
@@ -105,35 +167,22 @@ Page({
       loading: true
     })
     this._getSiteList({
-      lastId: this.data.lastId,
-      pageSize: this.data.pageSize,
-      empID: this.data.appUser.empID,
-      success: res => {
-        if (!res || res.length == 0) {
-          this.setData({
-            noMore: true,
-            loading: false
-          })
-        } else {
-          this.data.sites.push(...res);
-          var noMore = false;
-          if (res.length < this.data.pageSize) {
-            noMore = true
-          }
-          this.setData({
-            sites: this.data.sites,
-            lastId: res[res.length - 1].id,
-            noMore: noMore,
-            loading: false
-          })
-        }
-      }
+        lastSeq: this.data.lastSeq,
+        pageSize: this.data.pageSize,
+        empID: this.data.appUser.empID
+      })
+      .then(this._renderSiteList)
+      .catch(this._showFail);
+  },
+
+  toSiteInfo: function(e) {
+    wx.navigateTo({
+      url: '/pages/siteInfo/siteInfo?siteID=' + e.currentTarget.dataset.siteID,
     })
   },
 
-  toSiteInfo:function(e){
-    wx.navigateTo({
-      url: '/pages/siteInfo/siteInfo?id='+e.currentTarget.dataset.id,
-    })
+  //转发按钮
+  onShareAppMessage: function () {
+    return cfg.share;
   }
 })

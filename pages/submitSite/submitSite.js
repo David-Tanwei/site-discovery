@@ -64,54 +64,124 @@ Page({
     })
   },
 
-  genSiteID: function() {
-    ////////////////////////////////////////////////////通过终端和时间生成唯一id
-    return 'twtest';
+  //请求siteID
+  getSiteID: function() {
+    //获取服务端分配的siteID
+    return new Promise((resolve, reject) => {
+      console.log('getSiteID start');
+      wx.request({
+        url: cfg.getSiteIDUrl,
+        method: 'POST',
+        success: res => {
+          // console.log(res);
+          var siteID = res.data.siteID; //从response中得到siteID
+          console.log('getSiteID success', siteID);
+          resolve(siteID);
+        },
+        fail: err => {
+          console.log('getSiteID failed:', err);
+          reject(err);
+        }
+      })
+    })
   },
 
-  //递归上传照片
-  uploadImgs: function(fp, siteID, imgSeq) {
+  //promise.all上传照片
+  uploadImgs: function(fp, siteID) {
     if (fp.length == 0) {
-      //照片上传完成或没照片，进行下一步提交信息
-      this.submitSiteInfo();
-      return;
+      return Promise.resolve([siteID]);
+    } else {
+      const p = fp.map((item, index) => {
+        return this._uploadImg(item, siteID, index)
+      });
+      return Promise.all(p);
     }
-    wx.uploadFile({
-      url: cfg.uploadImgUrl,
-      filePath: fp[0],
-      name: 'image',
-      formData: {
-        'siteID': siteID,
-        'imgSeq': imgSeq
-      },
-      success: res => {
-        imgIndex += 1;
-        fp.splice(0, 1);
-        this.uploadImgs(fp, siteID, imgSeq)
-      },
-      fail: res => {
-        console.log('uploadfail res:',res);
-        /////////////////////////提示错误
-      }
+  },
+
+  //上传单张照片,imgSeq表示当前上传图片index，从0开始
+  _uploadImg: function(path, siteID, imgSeq) {
+    return new Promise((resolve, reject) => {
+      console.log('_uploadImg start', imgSeq);
+      wx.uploadFile({
+        url: cfg.uploadImgUrl,
+        filePath: path,
+        name: 'image',
+        header: {
+          "Content-Type": "multipart/form-data"
+        },
+        formData: {
+          'siteID': siteID,
+          'imgSeq': imgSeq
+        },
+        success: res => {
+          console.log('_uploadImg success', imgSeq);
+          resolve(siteID);
+        },
+        fail: err => {
+          console.log('_uploadImg failed:', imgSeq, err);
+          reject(err);
+        }
+      })
     })
   },
 
   //上传数据
-  submitSiteInfo: function() {
-    //接口提交
-    wx.request({
-      url: cfg.submitSiteInfoUrl,
-      data: {name:'tanwei'},
-      // data: this.site,
-      method: 'POST',
-      success: res => {
-        console.log('request res:',res);
-        /////////关闭等待toast
-      }
+  submitSiteInfo: function(site) {
+    return new Promise((resolve, reject) => {
+      console.log('上传数据：', site);
+      wx.request({
+        url: cfg.submitSiteInfoUrl,
+        header: {
+          'content-type': 'application/x-www-form-urlencoded'
+        },
+        data: site,
+        method: 'POST',
+        success: res => {
+          console.log('上传数据成功：');
+          console.log('request res:', res);
+          resolve();
+        },
+        fail: err => {
+          console.log('submitSiteInfo failed:', err);
+          reject(err);
+        }
+      })
     })
   },
 
-  //提交
+  //submit fail
+  submitFail: function(err) {
+    wx.hideLoading({
+      success: () => {
+        wx.showToast({
+          title: '发送失败！' + err.errMsg,
+          icon: 'none',
+          mask: true,
+          duration: 2000
+        })
+      }
+    });
+  },
+
+  //submit success
+  submitSuccess: function() {
+    wx.hideLoading({
+      success: () => {
+        wx.showToast({
+          title: '发送成功！',
+          mask: true,
+          duration: 50000
+        });
+        setTimeout(() => {
+          wx.redirectTo({
+            url: '/pages/setSiteLoc/setSiteLoc',
+          })
+        }, 1500);
+      }
+    });
+  },
+
+  //提交按钮
   submitSite: function(e) {
     //验证输入合法
     if (!e.detail.value.locDesc || !e.detail.value.siteDesc) {
@@ -119,36 +189,55 @@ Page({
         title: '请输入工地位置和工地情况概述。',
         icon: 'none',
         duration: 2000
-      })
+      });
+      return;
     }
 
     //准备待提交数据
-    this.site={};
-    this.site.lng = this.data.siteLoc.lng;
-    this.site.lat = this.data.siteLoc.lat;
-    this.site.locDesc = this.data.siteLoc.locDesc;
-    this.site.region = this.data.siteLoc.region;
-    this.site.siteDesc = e.detail.value.siteDesc;
-    this.site.siteDesc = e.detail.value.siteDesc;
-    this.site.imgFilePath = [];
-    this.site.nickName = '';
-    this.site.empID = '';
-    this.site.name = '';
-    this.site.title = '';
-    this.site.phone = '';
+    var site = {};
+    site.lng = this.data.siteLoc.lng;
+    site.lat = this.data.siteLoc.lat;
+    site.locDesc = this.data.siteLoc.locDesc;
+    site.region = this.data.siteLoc.region;
+    site.siteDesc = e.detail.value.siteDesc;
+    site.siteDesc = e.detail.value.siteDesc;
+    site.nickName = '';
+    site.empID = '';
+    site.name = '';
+    site.title = '';
+    site.phone = '';
     if (this.data.userInfo) {
-      this.site.nickName = this.data.userInfo.nickName;
+      site.nickName = this.data.userInfo.nickName;
     }
     var appUser = wx.getStorageSync('appUser');
     if (!!appUser) {
-      this.site.empID = appUser.empID;
-      this.site.name = appUser.name;
-      this.site.title = appUser.title;
-      this.site.phone = appUser.phone;
+      site.empID = appUser.empID || '';
+      site.name = appUser.name;
+      site.title = appUser.title;
+      site.phone = appUser.phone;
     }
 
-    //上传图片////////////////////////////显示等待toast
+    //上传图片///显示等待toast
+    wx.showLoading({
+      title: '正在上传...',
+      mask: true
+    });
     var fp = this.data.imgFilePath;
-    this.uploadImgs(fp, this.genSiteID, 1);
+    this.getSiteID()
+      .then(siteID => {
+        return this.uploadImgs(fp, siteID)
+      })
+      .then(res => {
+        console.log('uploadImgs done:', res[0]);
+        site.siteID = res[0];
+        return this.submitSiteInfo(site);
+      })
+      .then(this.submitSuccess)
+      .catch(this.submitFail);
+  },
+
+  //转发按钮
+  onShareAppMessage: function() {
+    return cfg.share;
   }
 })
