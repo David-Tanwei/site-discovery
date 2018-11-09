@@ -14,7 +14,6 @@ Page({
   },
   onLoad: function() {
     this.data.userInfo = app.globalData.userInfo;
-
   },
 
   //点击地图重新选择工地位置
@@ -73,13 +72,17 @@ Page({
         url: cfg.getSiteIDUrl,
         method: 'POST',
         success: res => {
-          // console.log(res);
-          var siteID = res.data.siteID; //从response中得到siteID
-          console.log('getSiteID success', siteID);
-          resolve(siteID);
+          if(res.statusCode==200){
+            var siteID = res.data.siteID; //从response中得到siteID
+            console.log('getSiteID success', siteID);
+            resolve(siteID);
+          }else{
+            console.log('getSiteID failed:', res.errMsg);
+            reject(err);
+          }
         },
         fail: err => {
-          console.log('getSiteID failed:', err);
+          console.log('getSiteID failed:', err.errMsg);
           reject(err);
         }
       })
@@ -114,7 +117,7 @@ Page({
           'imgSeq': imgSeq
         },
         success: res => {
-          console.log('_uploadImg success', imgSeq);
+          console.log('_uploadImg res', imgSeq, res);
           resolve(siteID);
         },
         fail: err => {
@@ -137,9 +140,14 @@ Page({
         data: site,
         method: 'POST',
         success: res => {
-          console.log('上传数据成功：');
-          console.log('request res:', res);
-          resolve();
+          if(res.statusCode==200){
+            console.log('上传数据成功：');
+            console.log('request res:', res);
+            resolve();
+          }else{
+            console.log('submitSiteInfo failed:', res.errMsg);
+            reject(err);
+          }
         },
         fail: err => {
           console.log('submitSiteInfo failed:', err);
@@ -154,7 +162,7 @@ Page({
     wx.hideLoading({
       success: () => {
         wx.showToast({
-          title: '发送失败！' + err.errMsg,
+          title: '发送失败！' + err,
           icon: 'none',
           mask: true,
           duration: 2000
@@ -197,10 +205,10 @@ Page({
     var site = {};
     site.lng = this.data.siteLoc.lng;
     site.lat = this.data.siteLoc.lat;
-    site.locDesc = this.data.siteLoc.locDesc;
+    site.locDesc = e.detail.value.locDesc;
     site.region = this.data.siteLoc.region;
     site.siteDesc = e.detail.value.siteDesc;
-    site.siteDesc = e.detail.value.siteDesc;
+    site.openID = app.globalData.openID;
     site.nickName = '';
     site.empID = '';
     site.name = '';
@@ -212,9 +220,9 @@ Page({
     var appUser = wx.getStorageSync('appUser');
     if (!!appUser) {
       site.empID = appUser.empID || '';
-      site.name = appUser.name;
-      site.title = appUser.title;
-      site.phone = appUser.phone;
+      site.name = appUser.name || '';
+      site.title = appUser.title || '';
+      site.phone = appUser.phone || '';
     }
 
     //上传图片///显示等待toast

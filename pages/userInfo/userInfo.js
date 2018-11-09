@@ -87,7 +87,8 @@ Page({
 
   //保存修改
   saveChange:function(e){
-    wx.setStorageSync('appUser', e.detail.value)
+    wx.setStorageSync('appUser', e.detail.value);
+    app.globalData.appUser = e.detail.value;
     wx.showToast({
       title: '已保存',
       duration:1000,

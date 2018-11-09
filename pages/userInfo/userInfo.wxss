@@ -14,10 +14,3 @@
 button{
   width: 90%;
 }
-
-.avatar{
-  height: 70rpx;
-  width: 70rpx;
-  border-radius: 50%;
-  float: right;
-}

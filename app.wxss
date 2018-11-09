@@ -53,3 +53,10 @@ page {
 .hide {
   visibility: hidden;
 }
+
+.page__hd .avatar{
+  height: 70rpx;
+  width: 70rpx;
+  border-radius: 50%;
+  float: right;
+}

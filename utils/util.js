@@ -15,58 +15,40 @@ const formatNumber = n => {
 }
 
 
-//预加载图片，成功则返回{imgSeq:base64}
-const cfg = require('../private/config.js');
-const loadImg = (siteID, imgSeq) => {
-  return new Promise((resolve, reject) => {
-    wx.request({
-      url: cfg.getImgUrl,
-      method: 'GET',
-      header: {
-        'content-type': 'application/x-www-form-urlencoded'
-      },
-      data: { siteID: siteID, imgSeq: imgSeq },
-      success: res => {
-        resolve({ imgSeq: imgSeq, src: 'data:image/png;base64,' + res.data.image})
-      },
-      fail: err=>{
-        reject()      
-      }
-    })
-    //测试
-    // var testImgs = [{
-    //   imgSeq: 2,
-    //   src: '../images/icon_user.png'
-    // }, {
-    //   imgSeq: 3,
-    //   src: '../images/icon_user.png'
-    // }, {
-    //   imgSeq: 4,
-    //   src: '../images/icon_user.png'
-    // }, {
-    //   imgSeq: 1,
-    //   src: '../images/icon_history.png'
-    // }, {
-    //   imgSeq: 5,
-    //   src: '../images/icon_user.png'
-    // }, {
-    //   imgSeq: 7,
-    //   src: '../images/icon_user.png'
-    // }];
-    // if (testImgs[imgSeq]) {
-    //   var t = setTimeout(() => {
-    //     resolve(testImgs[imgSeq])
-    //   }, 1500)
-    // } else {
-    //   var t = setTimeout(() => {
-    //     reject()
-    //   }, 1500)
-    // }
-  })
-}
+// //预加载图片，成功则返回{imgSeq:base64}，setData数据量过大，该方法不可行
+// const cfg = require('../private/config.js');
+// const loadImg = (siteID, imgSeq) => {
+//   return new Promise((resolve, reject) => {
+//     wx.request({
+//       url: cfg.getImgUrl,
+//       method: 'GET',
+//       header: {
+//         'content-type': 'application/x-www-form-urlencoded'
+//       },
+//       data: {
+//         siteID: siteID,
+//         imgSeq: imgSeq
+//       },
+//       success: res => {
+//         if (res.statusCode == 200) {
+//           // resolve({ imgSeq: imgSeq, src: 'data:image/png;base64,' + res.data.image })//base64超过页面控件大小限制
+//           resolve({
+//             imgSeq: imgSeq,
+//             src: cfg.getImgUrl + '?siteID=' + siteID + '&imgSeq=' + imgSeq
+//           })
+//         } else {
+//           reject(res.errMsg)
+//         }
+//       },
+//       fail: err => {
+//         reject(err)
+//       }
+//     })
+//   })
+// }
 
 
 module.exports = {
-  formatTime: formatTime,
-  loadImg: loadImg
+  formatTime: formatTime
+  // loadImg: loadImg
 }

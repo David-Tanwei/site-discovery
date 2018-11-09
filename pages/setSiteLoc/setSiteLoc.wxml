@@ -15,7 +15,7 @@
       </block>
       <block wx:else>
         <cover-view class='top_text'>
-          <cover-view class="txt_warning">未填写工号，准确填写工号才能获得奖励</cover-view>
+          <cover-view class="txt_warning">《《《 准确填写工号才能获得奖励</cover-view>
         </cover-view>
       </block>
       <cover-image class='history' src='../images/icon_history.png' bindtap='toHistory'></cover-image>

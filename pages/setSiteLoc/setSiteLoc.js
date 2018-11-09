@@ -23,12 +23,7 @@ Page({
   /* 生命周期函数--监听页面初次渲染完成*/
   onLoad: function() {
     //处理用户登录
-    if (app.globalData.userInfo) {
-      this.setData({
-        userInfo: app.globalData.userInfo,
-        hasUserInfo: true
-      })
-    } else if (this.data.canIUse) {
+    if (!app.globalData.userInfo & this.data.canIUse) {
       // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
       // 所以此处加入 callback 以防止这种情况
       app.userInfoReadyCallback = res => {
@@ -56,6 +51,13 @@ Page({
   },
 
   onShow: function() {
+    //显示userInfo
+    if (app.globalData.userInfo) {
+      this.setData({
+        userInfo: app.globalData.userInfo,
+        hasUserInfo: true
+      })
+    }
     this.getAppUser(); //用户填写信息
   },
 
@@ -82,19 +84,19 @@ Page({
   resetLoc: function() {
     this.mapCtx.moveToLocation();
     //恢复比例尺效果
-    setTimeout(()=>{
+    setTimeout(() => {
       type: 'gcj02',
       this.mapCtx.getCenterLocation({
-        success:res=>{
+        success: res => {
           this.data.userLoc.lng = res.longitude;
           this.data.userLoc.lat = res.latitude;
           this.setData({
             userLoc: this.data.userLoc,
             scale: 19
-        })
+          })
         }
       })
-    },800)
+    }, 800)
     //用户位置方法，需授权
     // wx.getLocation({
     //   type: 'gcj02',
@@ -188,20 +190,19 @@ Page({
 
   //用户填写信息
   getAppUser: function() {
-    var appUser = wx.getStorageSync('appUser');
     this.setData({
-      appUser: appUser
+      appUser: app.globalData.appUser
     })
   },
 
-  toHistory:function(){
+  toHistory: function() {
     wx.navigateTo({
       url: '/pages/history/history',
     })
   },
 
   //转发按钮
-  onShareAppMessage: function () {
+  onShareAppMessage: function() {
     return cfg.share;
   }
 })

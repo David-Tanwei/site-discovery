@@ -1,12 +1,11 @@
 //app.js
+const cfg = require('/private/config.js');
+
 App({
-  onLaunch: function () {
-    // 登录，暂不做登录，若有流量奖励等需返回用户帐号的需求，再加登录
-    // wx.login({
-    //   success: res => {
-    //     // 发送 res.code 到后台换取 openId, sessionKey, unionId
-    //   }
-    // })
+  onLaunch: function() {
+    // 登录
+    this.login();
+
     // 获取用户信息
     wx.getSetting({
       success: res => {
@@ -27,9 +26,52 @@ App({
         }
       }
     })
+    this.globalData.appUser = wx.getStorageSync('appUser');
   },
   globalData: {
-    userInfo: null,//用户信息
-    siteLoc:{lng:0,lat:0,locDesc:''}//工地位置
+    userInfo: null, //用户信息
+    appUser: {},
+    siteLoc: {
+      lng: 0,
+      lat: 0,
+      locDesc: ''
+    }, //工地位置
+    openID: ''
+  },
+
+  //登录
+  login: function() {
+    var that = this;
+    var openID = wx.getStorageSync('openID');
+    if (!openID) {
+      wx.login({
+        success(res) {
+          if (res.code) {
+            wx.request({
+              url: cfg.code2SessionUrl,
+              method: 'POST',
+              header: {
+                'content-type': 'application/x-www-form-urlencoded'
+              },
+              data: {
+                code: res.code
+              },
+              success: res => {
+                if(res.statusCode==200){
+                  that.globalData.openID = JSON.parse(res.data).openid;
+                  wx.setStorageSync('openID', JSON.parse(res.data).openid);
+                }else{
+                  console.log('登录失败！' + res.errMsg)
+                }
+              }
+            })
+          } else {
+            console.log('登录失败！' + res.errMsg)
+          }
+        }
+      })
+    } else {
+      that.globalData.openID = openID;
+    }
   }
 })
